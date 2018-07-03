@@ -1,7 +1,6 @@
 package com.sdu.controller;
 
 import com.sdu.entity.Cutoff;
-import com.sdu.entity.SchoolInfo;
 import com.sdu.repository.CutoffRepository;
 import com.sdu.utils.Message;
 import org.springframework.beans.factory.annotation.Autowired;
