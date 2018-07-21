@@ -3,6 +3,7 @@ package com.sdu.entity;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -15,6 +16,7 @@ public class User {
 
     @Id
     private String username;
+    @NotNull
     private String password;
     private String category;
     private String province;

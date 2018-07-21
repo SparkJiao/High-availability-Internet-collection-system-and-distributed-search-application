@@ -44,7 +44,7 @@ public class SchoolInfoController {
 
     @RequestMapping("/getSchoolCutoffsNoMajor")
     public List<CutoffNoMajorOrBatch> getSchoolCutoffsNoMajor(String school_name, String category, String province, String year1, String year2){
-        return cutoffRepository.findCutoffsBySchool_nameAndProvinceAndCategoryAndYearBetween(school_name, category, province, year1, year2);
+        return cutoffRepository.findCutoffsBySchoolNameAndProvinceAndCategoryAndYearBetween(school_name, category, province, year1, year2);
     }
 
     @RequestMapping("/getSchoolCutoffs")
@@ -53,7 +53,7 @@ public class SchoolInfoController {
         List<List<CutoffNoBatch>> ans = new ArrayList<>();
         List<CutoffNoBatch> cutoffNoBatches;
         for(int i=0;i<majors.size();i++){
-            cutoffNoBatches = cutoffRepository.findCutoffsBySchool_nameAndProvinceAndCategoryAndYearBetweenAndMajor(school_name, category, province, year1, year2, majors.get(i));
+            cutoffNoBatches = cutoffRepository.findCutoffsBySchoolNameAndProvinceAndCategoryAndYearBetweenAndMajor(school_name, category, province, year1, year2, majors.get(i));
             ans.add(cutoffNoBatches);
         }
         return ans;

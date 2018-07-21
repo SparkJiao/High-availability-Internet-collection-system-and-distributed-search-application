@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- <link rel="icon" href="../../favicon.ico"> -->
+
+    <title>Administor</title>
+    <link href="./css/mdui.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="mdui-container">
+        <div class="mdui-row">
+            <div class="mdui-typo">
+                <h1>
+                    模板配置
+                </h1>
+                <hr/>
+            </div>
+        </div>
+        <div class="mdui-row mdui-m-t-2 mdui-m-b-2 mdui-col-xs-12" id="panel">
+            <!-- <div class="mdui-panel mdui-panel-popout" mdui-panel>
+                <div class="mdui-panel-item">
+                    <div class="mdui-panel-item-header">
+                        <div class="mdui-panel-item-title">www.baidu.com</div>
+                        <div class="mdui-panel-item-summary">3层</div>
+                        <div class="mdui-panel-item-summary">静态</div>
+                        <div class="mdui-panel-item-summary">未采集</div>
+                        <div class="mdui-panel-item-summary">创建于2018:7:16:17:08</div>
+                        <div class="mdui-panel-item-summary">于2018:7:16:17:08采集完成</div>
+                        <i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+                    </div>
+                    <div class="mdui-panel-item-body">
+                        <div class="mdui-table-fluid">
+                            <table class="mdui-table mdui-table-hoverable">
+                                <thead>
+                                    <tr>
+                                        <th>层数</th>
+                                        <th>匹配方式</th>
+                                        <th>匹配模板</th>
+                                        <th>pagenumber位置</th>
+                                        <th>size位置</th>
+                                        <th>参数总数量</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <div class="mdui-row mdui-col-xs-2">
+            <button class="mdui-fab mdui-fab-fixed mdui-ripple mdui-color-pink-400" mdui-dialog="{target: '#example'}">
+                <i class="mdui-icon material-icons">add</i>
+            </button>
+        </div>
+        <div class="mdui-dialog" id="example">
+            <div class="mdui-dialog-title">添加一个新的模板</div>
+            <div class="mdui-dialog-content">
+                <div class="mdui-row mdui-m-t-2 mdui-m-b-2">
+                    <div class="mdui-textfield mdui-textfield-floating-label mdui-col-xs-12">
+                        <label class="mdui-textfield-label">站点URL</label>
+                        <textarea class="mdui-textfield-input" id="startUrl_field"></textarea>
+                    </div>
+                </div>
+                <div class="mdui-row mdui-m-t-2 mdui-m-b-2">
+                    <form>
+                        <label class="mdui-radio">
+                            <input type="radio" name="static" value="1" />
+                            <i class="mdui-radio-icon"></i>
+                            动态页面
+                        </label>
+                        <label class="mdui-radio">
+                            <input type="radio" name="static" value="0" checked/>
+                            <i class="mdui-radio-icon"></i>
+                            静态页面
+                        </label>
+                    </form>
+                </div>
+                <div class="mdui-row mdui-m-t-2 mdui-m-b-2">
+                    <div class="mdui-textfield mdui-textfield-floating-label mdui-col-xs-12">
+                        <label class="mdui-textfield-label">请求头</label>
+                        <textarea class="mdui-textfield-input" id="headers_field"></textarea>
+                    </div>
+                </div>
+                <div class="mdui-row mdui-m-t-2 mdui-m-b-2">
+                    <div class="mdui-textfield mdui-textfield-floating-label mdui-col-xs-12">
+                        <label class="mdui-textfield-label">层数</label>
+                        <textarea class="mdui-textfield-input" id="level_field"></textarea>
+                    </div>
+                </div>
+                <div id="dialog-content">
+                    
+                </div>
+            </div>
+            <div class="mdui-dialog-actions">
+                <button class="mdui-btn mdui-ripple" mdui-dialog-close>cancel</button>
+                <button class="mdui-btn mdui-ripple" mdui-dialog-confirm id="submit">submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <!-- <script src="../js/bootstrap.min.js"></script>
+        <script src="../js/Proper.js"></script> -->
+    <script src="./js/mdui.js"></script>
+    <script src="./js/administration.js"></script>
+</body>
+
+</html>

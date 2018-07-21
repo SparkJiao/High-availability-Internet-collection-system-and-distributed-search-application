@@ -1,9 +1,12 @@
 package com.sdu.entity;
 
+import com.sdu.utils.MatchModel;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
- * Created by kkkkkk on 2018/7/2.
+ * Created by kkkkkk on 2018/7/13.
  */
 
 @Entity
@@ -13,22 +16,42 @@ public class Model {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String website_name;
-    private String channel_name;
-    private String channel_url;
-    private String start_time;
-    private String stop_time;
-    private String status;
+    @NotNull
+    private String startUrl;
+    @NotNull
+    private int currentLevel;
+    @NotNull
+    private String token;
+    @NotNull
+    private String pattern;
+    @NotNull
+    private int total;
+    @NotNull
+    private int wherePagenumber;
+    @NotNull
+    private int whereSize;
 
-    public Model(String website_name, String channel_name, String channel_url, String status) {
-        this.website_name = website_name;
-        this.channel_name = channel_name;
-        this.channel_url = channel_url;
-        this.status = status;
+    public Model(@NotNull String startUrl, @NotNull int currentLevel, @NotNull String token, @NotNull String pattern, @NotNull int wherePagenumber, @NotNull int whereSize, @NotNull int total) {
+        this.startUrl = startUrl;
+        this.currentLevel = currentLevel;
+        this.token = token;
+        this.pattern = pattern;
+        this.wherePagenumber = wherePagenumber;
+        this.whereSize = whereSize;
+        this.total = total;
     }
 
-    public Model(){
+    public Model(@NotNull String startUrl, MatchModel matchModel){
+        this.startUrl = startUrl;
+        this.currentLevel = matchModel.getCurrentLevel();
+        this.token = matchModel.getToken();
+        this.pattern = matchModel.getPattern();
+        this.wherePagenumber = matchModel.getWherePagenumber();
+        this.whereSize = matchModel.getWhereSize();
+        this.total = matchModel.getTotal();
+    }
 
+    public Model() {
     }
 
     public int getId() {
@@ -39,51 +62,72 @@ public class Model {
         this.id = id;
     }
 
-    public String getWebsite_name() {
-        return website_name;
+    public String getStartUrl() {
+        return startUrl;
     }
 
-    public void setWebsite_name(String website_name) {
-        this.website_name = website_name;
+    public void setStartUrl(String startUrl) {
+        this.startUrl = startUrl;
     }
 
-    public String getChannel_name() {
-        return channel_name;
+    public int getCurrentLevel() {
+        return currentLevel;
     }
 
-    public void setChannel_name(String channel_name) {
-        this.channel_name = channel_name;
+    public void setCurrentLevel(int currentLevel) {
+        this.currentLevel = currentLevel;
     }
 
-    public String getChannel_url() {
-        return channel_url;
+    public String getToken() {
+        return token;
     }
 
-    public void setChannel_url(String channel_url) {
-        this.channel_url = channel_url;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public String getStart_time() {
-        return start_time;
+    public String getPattern() {
+        return pattern;
     }
 
-    public void setStart_time(String start_time) {
-        this.start_time = start_time;
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
     }
 
-    public String getStop_time() {
-        return stop_time;
+    public int getWherePagenumber() {
+        return wherePagenumber;
     }
 
-    public void setStop_time(String stop_time) {
-        this.stop_time = stop_time;
+    public void setWherePagenumber(int wherePagenumber) {
+        this.wherePagenumber = wherePagenumber;
     }
 
-    public String getStatus() {
-        return status;
+    public int getWhereSize() {
+        return whereSize;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setWhereSize(int whereSize) {
+        this.whereSize = whereSize;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    @Override
+    public String toString() {
+        return "Model{" +
+                "startUrl='" + startUrl + '\'' +
+                ", currentLevel=" + currentLevel +
+                ", token='" + token + '\'' +
+                ", pattern='" + pattern + '\'' +
+                ", total=" + total +
+                ", wherePagenumber=" + wherePagenumber +
+                ", whereSize=" + whereSize +
+                '}';
     }
 }

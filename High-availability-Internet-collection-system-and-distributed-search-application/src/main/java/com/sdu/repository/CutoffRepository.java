@@ -1,7 +1,7 @@
 package com.sdu.repository;
 
 import com.sdu.entity.Cutoff;
-import com.sdu.utils.CutoffModel;
+import com.sdu.entity.CutoffKey;
 import com.sdu.utils.CutoffNoBatch;
 import com.sdu.utils.CutoffNoMajor;
 import com.sdu.utils.CutoffNoMajorOrBatch;
@@ -21,21 +21,23 @@ import java.util.List;
     b、指定批次？
  */
 
-public interface CutoffRepository extends JpaRepository<Cutoff, Integer>{
+public interface CutoffRepository extends JpaRepository<Cutoff, CutoffKey>{
 
-    Cutoff findBySchool_nameAndProvinceAndYearAndCategoryAndMajorAndBatch(String school_name, String province, String year, String category, String major, String batch);
+    //Cutoff findBySchool_nameAndProvinceAndYearAndCategoryAndMajorAndBatch(String school_name, String province, String year, String category, String major, String batch);
 
-    @Query("select school_name, province, year, category, min(grade) from Cutoff c where (c.school_name = ?1 and c.province = ?2 and c.category = ?3 and c.year>= ?4 and c.year <= ?5) group by year order by year")
-    List<CutoffNoMajorOrBatch> findCutoffsBySchool_nameAndProvinceAndCategoryAndYearBetween(String school_name, String province, String category, String year1, String year2);
+    @Query("select schoolName, province, year, category, avegrade, maxgrade, min(mingrade) from Cutoff c where (c.schoolName = ?1 and c.province = ?2 and c.category = ?3 and c.year>= ?4 and c.year <= ?5) group by year order by year")
+    List<CutoffNoMajorOrBatch> findCutoffsBySchoolNameAndProvinceAndCategoryAndYearBetween(String school_name, String province, String category, String year1, String year2);
 
-    @Query("select school_name, province, year, category, major, min(grade) from Cutoff c where (c.school_name = ?1 and c.province = ?2 and c.category = ?3 and c.year>=?4 and c.year <= ?5 and c.major = ?6) group by year order by year")
-    List<CutoffNoBatch> findCutoffsBySchool_nameAndProvinceAndCategoryAndYearBetweenAndMajor(String school_name, String province, String category, String year1, String year2, String major);
+    @Query("select schoolName, province, year, category, major, avegrade, maxgrade, min(mingrade) from Cutoff c where (c.schoolName = ?1 and c.province = ?2 and c.category = ?3 and c.year>=?4 and c.year <= ?5 and c.major = ?6) group by year order by year")
+    List<CutoffNoBatch> findCutoffsBySchoolNameAndProvinceAndCategoryAndYearBetweenAndMajor(String school_name, String province, String category, String year1, String year2, String major);
 
-    @Query("select school_name, province, year, category, batch, min(grade) from Cutoff c where (c.school_name = ?1 and c.province = ?2 and c.category = ?3 and c.year>=?4 and c.year <= ?5 and c.batch = ?6) group by year order by year")
-    List<CutoffNoMajor> findCutoffsBySchool_nameAndProvinceAndCategoryAndYearBetweenAndBatch(String school_name, String province, String category, String year1, String year2, String batch);
+    @Query("select schoolName, province, year, category, batch, avegrade, maxgrade, min(mingrade) from Cutoff c where (c.schoolName = ?1 and c.province = ?2 and c.category = ?3 and c.year>=?4 and c.year <= ?5 and c.batch = ?6) group by year order by year")
+    List<CutoffNoMajor> findCutoffsBySchoolNameAndProvinceAndCategoryAndYearBetweenAndBatch(String school_name, String province, String category, String year1, String year2, String batch);
 
-    @Query("select school_name, province, year, category, major, batch, grade from Cutoff c where (c.school_name = ?1 and c.province = ?2 and c.category = ?3 and c.year>=?4 and c.year <= ?5 and c.major = ?6 and c.batch = ?7) order by year")
-    List<CutoffModel> findCutoffsBySchool_nameAndProvinceAndCategoryAndYearBetweenAndMajorAndBatch(String school_name, String province, String category, String year1, String year2, String major, String batch);
+    @Query("select schoolName, province, year, category, major, batch, avegrade, maxgrade, mingrade from Cutoff c where (c.schoolName = ?1 and c.province = ?2 and c.category = ?3 and c.year>= ?4 and c.year <= ?5 and c.major = ?6 and c.batch = ?7) order by year")
+    List<Cutoff> findCutoffsBySchoolNameAndProvinceAndCategoryAndYearBetweenAndMajorAndBatch(String school_name, String province, String category, String year1, String year2, String major, String batch);
 
+    Cutoff findCutoffBySchoolNameAndProvinceAndYearAndCategoryAndMajorAndBatch(String schoolName, String province, String year, String category, String major, String batch);
 
+    List<Cutoff> findCutoffsBySchoolNameAndProvinceAndMajor(String schoolName, String province, String major);
 }

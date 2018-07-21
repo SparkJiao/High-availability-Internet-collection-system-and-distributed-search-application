@@ -1,6 +1,7 @@
 package com.sdu.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by kkkkkk on 2018/7/3.
@@ -13,7 +14,9 @@ public class Collection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotNull
     private String username;
+    @NotNull
     private String school;
 
     public Collection(String username, String school) {

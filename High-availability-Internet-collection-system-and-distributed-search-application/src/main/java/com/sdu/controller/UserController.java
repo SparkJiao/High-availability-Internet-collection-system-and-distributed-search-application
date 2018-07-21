@@ -51,8 +51,11 @@ public class UserController {
     @RequestMapping("/setUserInfo")
     public Message setUserInfo(String username, String category, String province, String grade){
         Message msg = ifUsernameExist(username);
-        if(!msg.isFlag())
+        if(msg.isFlag()){
+            msg.setFlag(false);
+            msg.setMsg("no such user");
             return msg;
+        }
         userRepository.setUserInfo(username, category, province, grade);
         return new Message(true);
     }
@@ -60,8 +63,11 @@ public class UserController {
     @RequestMapping("/changePassword")
     public Message changePassword(String username, String password){
         Message msg = ifUsernameExist(username);
-        if(!msg.isFlag())
+        if(msg.isFlag()){
+            msg.setFlag(false);
+            msg.setMsg("no such user");
             return msg;
+        }
         userRepository.changePassword(username, password);
         return new Message(true);
     }

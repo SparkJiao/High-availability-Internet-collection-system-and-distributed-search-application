@@ -1,30 +1,41 @@
 package com.sdu.entity;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by kkkkkk on 2018/7/2.
  */
 @Entity
 @Table(name = "pcutoff")
+@IdClass(PcutoffKey.class)
 public class Pcutoff {
     @Id
+    @NotNull
     private String province;
-    private int ifdiv = 1;
-    private String benke;
-    private String zhuanke;
-    private String yiben;
-    private String erben;
+    @Id
+    @NotNull
+    private String year;
+    @Id
+    @NotNull
+    private String category;
+    @Id
+    @NotNull
+    private String batch;
+    @NotNull
+    private String grade;
 
-    public Pcutoff(String province, int ifdiv, String benke, String zhuanke, String yiben, String erben) {
+    public Pcutoff(@NotNull String province, @NotNull String year, @NotNull String category, @NotNull String batch, @NotNull String grade) {
         this.province = province;
-        this.ifdiv = ifdiv;
-        this.benke = benke;
-        this.zhuanke = zhuanke;
-        this.yiben = yiben;
-        this.erben = erben;
+        this.year = year;
+        this.category = category;
+        this.batch = batch;
+        this.grade = grade;
     }
 
     public Pcutoff() {
@@ -34,47 +45,51 @@ public class Pcutoff {
         return province;
     }
 
+
     public void setProvince(String province) {
         this.province = province;
     }
 
-    public int getIfdiv() {
-        return ifdiv;
+    public String getYear() {
+        return year;
     }
 
-    public void setIfdiv(int ifdiv) {
-        this.ifdiv = ifdiv;
+    public void setYear(String year) {
+        this.year = year;
     }
 
-    public String getBenke() {
-        return benke;
+    public String getCategory() {
+        return category;
     }
 
-    public void setBenke(String benke) {
-        this.benke = benke;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public String getZhuanke() {
-        return zhuanke;
+    public String getBatch() {
+        return batch;
     }
 
-    public void setZhuanke(String zhuanke) {
-        this.zhuanke = zhuanke;
+    public void setBatch(String batch) {
+        this.batch = batch;
     }
 
-    public String getYiben() {
-        return yiben;
+    public String getGrade() {
+        return grade;
     }
 
-    public void setYiben(String yiben) {
-        this.yiben = yiben;
+    public void setGrade(String grade) {
+        this.grade = grade;
     }
 
-    public String getErben() {
-        return erben;
-    }
-
-    public void setErben(String erben) {
-        this.erben = erben;
+    @Override
+    public String toString() {
+        return "Pcutoff{" +
+                "province='" + province + '\'' +
+                ", year='" + year + '\'' +
+                ", category='" + category + '\'' +
+                ", batch='" + batch + '\'' +
+                ", grade='" + grade + '\'' +
+                '}';
     }
 }

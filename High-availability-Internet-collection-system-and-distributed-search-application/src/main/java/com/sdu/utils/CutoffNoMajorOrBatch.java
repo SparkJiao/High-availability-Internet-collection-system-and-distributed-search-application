@@ -12,14 +12,18 @@ public class CutoffNoMajorOrBatch {
     private String province;
     private String year;
     private String category;
-    private String grade;
+    private String avegrade;
+    private String maxgrade;
+    private String mingrade;
 
-    public CutoffNoMajorOrBatch(String school_name, String province, String year, String category, String grade) {
+    public CutoffNoMajorOrBatch(String school_name, String province, String year, String category, String avegrade, String maxgrade, String mingrade) {
         this.school_name = school_name;
         this.province = province;
         this.year = year;
         this.category = category;
-        this.grade = grade;
+        this.avegrade = avegrade;
+        this.maxgrade = maxgrade;
+        this.mingrade = mingrade;
     }
 
     public CutoffNoMajorOrBatch() {
@@ -57,11 +61,27 @@ public class CutoffNoMajorOrBatch {
         this.category = category;
     }
 
-    public String getGrade() {
-        return grade;
+    public String getAvegrade() {
+        return avegrade;
     }
 
-    public void setGrade(String grade) {
-        this.grade = grade;
+    public void setAvegrade(String avegrade) {
+        this.avegrade = avegrade;
+    }
+
+    public String getMaxgrade() {
+        return maxgrade;
+    }
+
+    public void setMaxgrade(String maxgrade) {
+        this.maxgrade = maxgrade;
+    }
+
+    public String getMingrade() {
+        return mingrade;
+    }
+
+    public void setMingrade(String mingrade) {
+        this.mingrade = mingrade;
     }
 }
