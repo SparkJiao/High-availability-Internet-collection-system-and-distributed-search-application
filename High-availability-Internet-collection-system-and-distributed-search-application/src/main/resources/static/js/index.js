@@ -1,7 +1,6 @@
 window.onload = function () {
 
-    var Username = "xd";
-    var Password = "";
+    var Username = "";
 
     var majorInputSchool = $("#major-input-school");
     var majorInputProvince = $("#major-input-province");
@@ -18,7 +17,7 @@ window.onload = function () {
     var inputUsrinfoProvince = $("#input-usrinfo-province");
     var inputUsrinfoGrade = $("#input-usrinfo-grade");
 
-    var dataFragment = $("#data-fragment");
+    var dataFragment = $("#dataFragment");
     var majorFragment = $("#major-fragment");
     var infoFragment = $("#infoFragment");
     //var dataPanel = $("#data-panel");
@@ -30,6 +29,18 @@ window.onload = function () {
     var majorSetSubmit = $("#major-set-submit");
     var usrinfoSetSubmit = $("#usrinfo-set-submit");
 
+    var addChart = $("#add-chart");
+    var maxGradeChart = $("#max-grade-chart");
+    var minGradeChart = $("#min-grade-chart");
+    var aveGradeChart = $("#ave-grade-chart");
+    var provinceGradeChart = $("#province-grade-chart")
+
+    var gradeTab = $("#grade-tab");
+    gradeTab.hide();
+    var tabMax = $("#tab-max");
+    var tabMin = $("#tab-min");
+    var tabAve = $("#tab-ave");
+
     var signin = $("#signin-button");
     var signup = $("#signup-button");
     var inputUsername = $("#input-username");
@@ -38,7 +49,118 @@ window.onload = function () {
     //data-fragment区域清空控制变量
     var lastButton = "xd";
 
+    //var cutoffView = new CutoffView();
+
     //var years=['2007','2008','2009','2010','2011','2012','2013','2014','2015','2016','2017'];
+
+    attempt();
+
+    function attempt() {
+        $.ajax({
+            type: "POST",
+            url: "/attempt",
+            datatype: "json",
+            async: false,
+            success: function (message) {
+                if (message.flag) {
+                    Username = message.msg;
+                    signback("欢迎回来！" + Username);
+                }
+            }
+        })
+    }
+
+    addChart.click(function () {
+
+        if (lastButton == "provinceSearch") {
+
+            var cutoffView = new CutoffView();
+
+            var num = $(".mdui-table-row-selected").length;
+
+            for (var i = 0; i < num; i++) {
+
+                console.log($(".mdui-table-row-selected:eq(" + i + ")").attr("id"));
+
+                var item = JSON.parse($(".mdui-table-row-selected:eq(" + i + ")").attr("id"));
+
+                var label = item.province + " " + item.category + " " + item.batch;
+
+                cutoffView.addCutoff(item.year, label, item.grade);
+            }
+
+            gradeTab.hide();
+
+            cutoffView.generate();
+            provinceGradeChart.empty();
+            newChart(cutoffView.x, cutoffView.y, cutoffView.taken, "line", "province-grade-chart");
+
+        } else {
+
+            var maxCutoffView = new CutoffView();
+            var minCutoffView = new CutoffView();
+            var aveCutoffView = new CutoffView();
+
+            var num = $(".mdui-table-row-selected").length;
+
+            for (var i = 0; i < num; i++) {
+
+                console.log($(".mdui-table-row-selected:eq(" + i + ")").attr("id"));
+
+                var item = JSON.parse($(".mdui-table-row-selected:eq(" + i + ")").attr("id"));
+                //console.log(item);
+
+                var label;
+
+                if (lastButton == "majorSearch") {
+                    label = item.schoolName + " " + item.province + " " + item.category + " " + item.major;
+                } else if (lastButton == "schoolSearch") {
+                    label = item.school + " " + item.province + " " + item.category + " " + item.batch;
+                }
+
+                maxCutoffView.addCutoff(item.year, label, item.maxgrade);
+                minCutoffView.addCutoff(item.year, label, item.mingrade);
+                aveCutoffView.addCutoff(item.year, label, item.avegrade);
+
+            }
+
+            gradeTab.show();
+
+            maxCutoffView.generate();
+            minCutoffView.generate();
+            aveCutoffView.generate();
+
+            maxGradeChart.empty();
+            minGradeChart.empty();
+            aveGradeChart.empty();
+
+            // maxGradeChart.show();
+            // minGradeChart.show();
+            // aveGradeChart.show();
+
+            newChart(maxCutoffView.x, maxCutoffView.y, maxCutoffView.taken, "line", "max-grade-chart");
+            newChart(minCutoffView.x, minCutoffView.y, minCutoffView.taken, "line", "min-grade-chart");
+            newChart(aveCutoffView.x, aveCutoffView.y, aveCutoffView.taken, "line", "ave-grade-chart");
+
+            // maxGradeChart.hide();
+            // minGradeChart.hide();
+            // aveGradeChart.hide();
+            // $(".mdui-tab-active:eq(0)").show();
+
+        }
+    })
+
+    tabMax.click(function () {
+        document.getElementById("max-grade-chart").__chartist__.update();
+    })
+
+    tabMin.click(function () {
+        document.getElementById("min-grade-chart").__chartist__.update();
+    })
+
+    tabAve.click(function () {
+        document.getElementById("ave-grade-chart").__chartist__.update();
+    })
 
     signin.click(function () {
         var username = inputUsername.val();
@@ -97,6 +219,11 @@ window.onload = function () {
         //清空所有内容
         if (lastButton != "majorSearch") {
             dataFragment.empty();
+            maxGradeChart.empty();
+            minGradeChart.empty();
+            aveGradeChart.empty();
+            provinceGradeChart.empty();
+            gradeTab.hide();
             lastButton = "majorSearch";
         }
 
@@ -114,19 +241,34 @@ window.onload = function () {
             data: { school_name: school_name, province: province, major: major },
             datatype: "json",
             async: false,
-            success: function (list) {
+            success: function (map) {
 
                 console.log("success");
 
-                //添加panel
-                addMajorPanel(school_name, province, major);
+                $.each(map.map, function (key, values) {
+                    major = key;
 
-                //在panel下添加绘制表格
-                $.each(list, function (i, item) {
-                    addMajorAndSchoolItem($("#" + school_name + "-" + province + "-" + major + "-tbody"), item.category, item.year, item.batch, item.maxgrade, item.mingrade, item.avegrade);
+                    console.log(key);
+
+                    //添加panel
+                    addMajorPanel(school_name, province, major);
+
+                    $(values).each(function (i, item) {
+                        addMajorAndSchoolItem($("#" + school_name + "-" + province + "-" + major + "-tbody"), JSON.stringify(item), item.category, item.year, item.batch, item.maxgrade, item.mingrade, item.avegrade);
+                    })
                 })
 
                 mdui.mutation();
+
+                // //添加panel
+                // addMajorPanel(school_name, province, major);
+
+                // //在panel下添加绘制表格
+                // $.each(list, function (i, item) {
+                //     addMajorAndSchoolItem($("#" + school_name + "-" + province + "-" + major + "-tbody"), item.category, item.year, item.batch, item.maxgrade, item.mingrade, item.avegrade);
+                // })
+
+                // mdui.mutation();
             }
         })
     })
@@ -136,6 +278,11 @@ window.onload = function () {
         //clear all the content
         if (lastButton != "schoolSearch") {
             dataFragment.empty();
+            maxGradeChart.empty();
+            minGradeChart.empty();
+            aveGradeChart.empty();
+            provinceGradeChart.empty();
+            gradeTab.hide();
             lastButton = "schoolSearch";
         }
 
@@ -155,7 +302,7 @@ window.onload = function () {
                 addSchoolPanel(school_name, province);
 
                 $.each(list, function (i, item) {
-                    addMajorAndSchoolItem($("#" + school_name + "-" + province + "-tbody"), item.category, item.year, item.batch, item.maxgrade, item.mingrade, item.avegrade);
+                    addMajorAndSchoolItem($("#" + school_name + "-" + province + "-tbody"), JSON.stringify(item), item.category, item.year, item.batch, item.maxgrade, item.mingrade, item.avegrade);
                 })
 
                 mdui.mutation();
@@ -168,6 +315,11 @@ window.onload = function () {
         //clear all the content
         if (lastButton != "provinceSearch") {
             dataFragment.empty();
+            maxGradeChart.empty();
+            minGradeChart.empty();
+            aveGradeChart.empty();
+            provinceGradeChart.empty();
+            gradeTab.hide();
             lastButton = "provinceSearch";
         }
 
@@ -187,7 +339,7 @@ window.onload = function () {
 
                 $.each(list, function (i, item) {
                     //console.log(i);
-                    addProvinceItem($("#" + province + "-tbody"), item.category, item.year, item.batch, item.grade);
+                    addProvinceItem($("#" + province + "-tbody"), JSON.stringify(item), item.category, item.year, item.batch, item.grade);
                 })
 
                 mdui.mutation();
@@ -197,7 +349,7 @@ window.onload = function () {
 
     majorSetSubmit.click(function () {
 
-        if(!loginCheck()){
+        if (!loginCheck()) {
             return;
         }
 
@@ -209,7 +361,7 @@ window.onload = function () {
 
     usrinfoSetSubmit.click(function () {
 
-        if(!loginCheck()){
+        if (!loginCheck()) {
             return;
         }
 
@@ -220,7 +372,7 @@ window.onload = function () {
         $.ajas({
             type: "POST",
             url: "/setUserInfo",
-            data: { useranme: username, category: category, province: province, grade: grade },
+            data: { useranme: Username, category: category, province: province, grade: grade },
             datatype: "json",
             async: false,
             success: function (message) {
@@ -230,9 +382,10 @@ window.onload = function () {
         })
     })
 
-    function loginCheck(){
-        if(Username=="xd"){
+    function loginCheck() {
+        if (Username == "") {
             alert("Please signin first!");
+            //location.href = "/index";
             return false;
         }
         return true;
@@ -245,7 +398,7 @@ window.onload = function () {
             majorSearchList.empty();
             $.ajax({
                 type: "POST",
-                url: "/findMajorLike",
+                url: "/findMajorContains",
                 data: { major: major },
                 async: false,
                 success: function (list) {
@@ -354,10 +507,10 @@ window.onload = function () {
         //console.log(content);
     }
 
-    function addProvinceItem(tbody, category, year, batch, grade) {
-        if (grade == "null")
+    function addProvinceItem(tbody, json, category, year, batch, grade) {
+        if (grade == null)
             grade = "---";
-        var content = "<tr><td>";
+        var content = "<tr id=" + json + "><td>";
         content += category;
         content += "</td><td>";
         content += year;
@@ -370,14 +523,14 @@ window.onload = function () {
     }
 
     //majorSearch & schoolSearch
-    function addMajorAndSchoolItem(tbody, category, year, batch, maxgrade, mingrade, avegrade) {
-        if (maxgrade == "null")
+    function addMajorAndSchoolItem(tbody, json, category, year, batch, maxgrade, mingrade, avegrade) {
+        if (maxgrade == null)
             maxgrade = "---";
-        if (mingrade == "null")
+        if (mingrade == null)
             mingrade = "---";
-        if (avegrade == "null")
+        if (avegrade == null)
             avegrade = "---";
-        var content = "<tr>";
+        var content = "<tr id=" + json + ">";
         content += "<td>" + category + "</td>";
         content += "<td>" + year + "</td>";
         content += "<td>" + batch + "</td>";
@@ -402,12 +555,12 @@ window.onload = function () {
     }
 
     function addExpectMajor(major) {
-        if (username == "" || useranme == null)
+        if (Username == "" || Useranme == null)
             alert("Please login first!");
         $.ajax({
             type: "POST",
             url: "/searchCutoff",
-            data: { username: username, major: major },
+            data: { username: Username, major: major },
             datatype: "json",
             async: false,
             success: function (message) {

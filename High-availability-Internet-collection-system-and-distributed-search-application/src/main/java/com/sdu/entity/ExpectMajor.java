@@ -9,13 +9,13 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "expect_major")
+@IdClass(ExpectMajorKey.class)
 public class ExpectMajor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
     @NotNull
     private String username;
+    @Id
     @NotNull
     private String major;
 
@@ -25,14 +25,6 @@ public class ExpectMajor {
     }
 
     public ExpectMajor() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getUsername() {

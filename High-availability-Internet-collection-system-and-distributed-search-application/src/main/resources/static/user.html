@@ -12,26 +12,27 @@
 
     <title>Administor</title>
     <link href="css/mdui.css" rel="stylesheet">
-    <!-- <link href="css/mdui.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <link rel="stylesheet" href="css/mychart.css">
+    <link rel="stylesheet" href="chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css">
 </head>
 
-<body>
+<body class="mdui-theme-primary-blue mdui-theme-accent-pink mdui-theme-layout-dark mdui-p-t-5">
+    <header class="mdui-appbar mdui-appbar-fixed mdui-appbar-scroll-hide">
+        <div class="mdui-toolbar mdui-color-blue-100">
+            <span class="mdui-typo-title">Flyer查分</span>
+            <div class="mdui-toolbar-spacer"></div>
+            <a href="javascript:void(0);" class="mdui-btn mdui-btn-icon" mdui-dialog="{target: '#loginDialog'}">
+                <i class="mdui-icon material-icons">account_circle</i>
+            </a>
+            <a href="#" id="username-field">←请登录</a>
+        </div>
+    </header>
     <div class="mdui-container">
         <!-- <div class="mdui-divider"></div> -->
         <div class="mdui-row mdui-m-t-2 mdui-m-b-2 mdui-col-xs-3">
             <div class="mdui-list" id="collected-school-list">
-                <!-- <label class="mdui-list-item mdui-ripple mdui-list-item-active" id="山东大学">
-                    <div class="mdui-list-item-avatar mdui-icon material-icons">assignment</div>
-                    <div class="mdui-list-item-content">山东大学</div>
-                </label>
-                <label class="mdui-list-item mdui-ripple" id="北京大学">
-                    <div class="mdui-list-item-avatar mdui-icon material-icons">assignment</div>
-                    <div class="mdui-list-item-content">北京大学</div>
-                </label>
-                <label class="mdui-list-item mdui-ripple" id="清华大学">
-                    <div class="mdui-list-item-avatar mdui-icon material-icons">assignment</div>
-                    <div class="mdui-list-item-content">清华大学</div>
-                </label> -->
+
             </div>
             <div class="mdui-divider-dark"></div>
             <div class="mdui-list">
@@ -47,43 +48,55 @@
 
             </div>
             <div id="school-input">
-
+                <div class="mdui-textfield mdui-textfield-floating-label">
+                    <label class="mdui-textfield-label">学校名称</label>
+                    <input class="mdui-textfield-input" id="schoolinput" type="text" />
+                </div>
             </div>
             <div class="mdui-list" id="school-search">
-                <!-- <label class="mdui-list-item mdui-ripple">
-                        <div class="mdui-checkbox">
-                            <input type="checkbox" checked/>
-                            <i class="mdui-checkbox-icon"></i>
-                        </div>
-                        <div class="mdui-list-item-content">Line item selected</div>
-                        <i class="mdui-list-item-icon mdui-icon material-icons">chat</i>
-                    </label>
-                    <label class="mdui-list-item mdui-ripple">
-                        <div class="mdui-checkbox">
-                            <input type="checkbox" />
-                            <i class="mdui-checkbox-icon"></i>
-                        </div>
-                        <div class="mdui-list-item-content">Line item unselected</div>
-                        <i class="mdui-list-item-icon mdui-icon material-icons">chat</i>
-                    </label> -->
+
             </div>
             <div id="school-confirm">
-                <!-- <button class="mdui-btn mdui-btn-icon mdui-theme-accent mdui-ripple">
+                <button class="mdui-btn mdui-btn-icon mdui-theme-accent mdui-ripple">
                     <i class="mdui-icon material-icons" id="s-confirm">add</i>
-                </button> -->
+                </button>
             </div>
             <!-- </div> -->
         </div>
         <div class="mdui-row mdui-m-t-2 mdui-m-b-2 mdui-col-xs-2"></div>
 
+        <div class="mdui-dialog" id="loginDialog">
+            <div class="mdui-dialog-content">
+                <div class="mdui-dialog-title">Signin or Signup</div>
+                <div class="mdui-textfield">
+                    <i class="mdui-icon material-icons">account_circle</i>
+                    <label class="mdui-textfield-label">Username</label>
+                    <input class="mdui-textfield-input" type="text" id="input-username" />
+                    <div class="mdui-textfield-helper">Helper Text</div>
+                </div>
+                <div class="mdui-textfield">
+                    <i class="mdui-icon material-icons">lock</i>
+                    <label class="mdui-textfield-label">password</label>
+                    <input class="mdui-textfield-input" type="password" id="input-password" />
+                </div>
+            </div>
+            <div class="mdui-dialog-actions">
+                <button class="mdui-btn mdui-ripple" id="signin-button" mdui-dialog-close>Signin</button>
+                <button class="mdui-btn mdui-ripple" id="signup-button" mdui-dialog-confirm>Signup</button>
+            </div>
+        </div>
         <!-- <div class="mdui-divider-dark"></div> -->
     </div>
     <script src="js/jquery-3.2.1.min.js"></script>
     <!-- <script src="../js/bootstrap.min.js"></script>
     <script src="../js/Proper.js"></script> -->
     <script src="js/mdui.js"></script>
-    <script src="js/user.js"></script>
     <script src="js/mdui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.0/chartist.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.js"></script>
+    <script src="js/CutoffView.js"></script>
+    <script src="js/user.js"></script>
 </body>
 
 </html>

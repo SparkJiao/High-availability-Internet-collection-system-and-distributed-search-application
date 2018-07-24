@@ -12,6 +12,9 @@
 
     <title>Administor</title>
     <link href="css/mdui.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <link rel="stylesheet" href="css/mychart.css">
+    <link rel="stylesheet" href="chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css">
 </head>
 
 <body class="mdui-theme-primary-blue mdui-theme-accent-teal mdui-theme-layout-dark">
@@ -86,43 +89,29 @@
                     <a href="#info-fragment" class="mdui-ripple">设置个人信息</a>
                 </div>
                 <div id="data-fragment" class="mdui-p-a-2">
-                    <!-- <div class="mdui-panel mdui-panel-popout" id="data-panel" mdui-panel>
-                        <div class="mdui-panel-item">
-                            <div class="mdui-panel-item-header">
-                                <div class="mdui-panel-item-title">山东大学</div>
-                                <div class="mdui-panel-item-summary">山东</div>
-                                <div class="mdui-panel-item-summary">软件工程</div>
-                                <i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
-                            </div>
-                            <div class="mdui-panel-item-body">
-                                <table class="mdui-table mdui-table-selectable">
-                                    <thead>
-                                        <tr>
-                                            <th>文理</th>
-                                            <th>年份</th>
-                                            <th>批次</th>
-                                            <th>最高分</th>
-                                            <th>最低分</th>
-                                            <th>平均分</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>理科</td>
-                                            <td>2015年</td>
-                                            <td>本科一批</td>
-                                            <td>644</td>
-                                            <td>644</td>
-                                            <td>644</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="chart-div">
+                    <div id="dataFragment">
 
-                    </div> -->
+                    </div>
+                    <div class="mdui-tab mdui-tab-centered" mdui-tab id="grade-tab">
+                        <a href="#max-grade-chart" class="mdui-ripple mdui-ripple-white" id="tab-max">最高分</a>
+                        <a href="#min-grade-chart" class="mdui-ripple mdui-ripple-white" id="tab-min">最低分</a>
+                        <a href="#ave-grade-chart" class="mdui-ripple mdui-ripple-white" id="tab-ave">平均分</a>
+                    </div>
+                    <div id="max-grade-chart">
+                        <!-- max-grade-chart; -->
+                    </div>
+                    <div id="min-grade-chart">
+                        <!-- min-grade-chart; -->
+                    </div>
+                    <div id="ave-grade-chart">
+                        <!-- ave-grade-chart; -->
+                    </div>
+                    <div id="province-grade-chart">
+                        <!-- province-grade-chart; -->
+                    </div>
+                    <button class="mdui-fab mdui-color-theme-accent mdui-ripple mdui-fab-fixed">
+                        <i class="mdui-icon material-icons" id="add-chart">add</i>
+                    </button>
                 </div>
                 <div id="major-fragment" class="mdui-p-a-2">
                     <div class="mdui-textfield mdui-textfield-floating-label">
@@ -192,13 +181,13 @@
                 <div class="mdui-textfield">
                     <i class="mdui-icon material-icons">account_circle</i>
                     <label class="mdui-textfield-label">Username</label>
-                    <input class="mdui-textfield-input" type="text" id="input-username"/>
+                    <input class="mdui-textfield-input" type="text" id="input-username" />
                     <div class="mdui-textfield-helper">Helper Text</div>
                 </div>
                 <div class="mdui-textfield">
                     <i class="mdui-icon material-icons">lock</i>
                     <label class="mdui-textfield-label">password</label>
-                    <input class="mdui-textfield-input" type="password" id="input-password"/>
+                    <input class="mdui-textfield-input" type="password" id="input-password" />
                 </div>
             </div>
             <div class="mdui-dialog-actions">
@@ -212,6 +201,10 @@
     <!-- <script src="../js/bootstrap.min.js"></script>
     <script src="../js/Proper.js"></script> -->
     <script src="js/mdui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.0/chartist.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.js"></script>
+    <script src="js/CutoffView.js"></script>
     <script src="js/index.js"></script>
 </body>
 

@@ -16,7 +16,7 @@ window.onload = function () {
             success: function (message) {
                 // alert(message.flag);
                 if(message.flag == true)
-                    location.href = "/index";
+                    location.href = "/administrator";
                 else
                     alert(message.msg);                   
             }

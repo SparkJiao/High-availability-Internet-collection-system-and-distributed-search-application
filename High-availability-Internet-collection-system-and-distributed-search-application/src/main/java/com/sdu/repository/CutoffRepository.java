@@ -39,5 +39,7 @@ public interface CutoffRepository extends JpaRepository<Cutoff, CutoffKey>{
 
     Cutoff findCutoffBySchoolNameAndProvinceAndYearAndCategoryAndMajorAndBatch(String schoolName, String province, String year, String category, String major, String batch);
 
-    List<Cutoff> findCutoffsBySchoolNameAndProvinceAndMajor(String schoolName, String province, String major);
+    List<Cutoff> findCutoffsBySchoolNameAndProvinceAndMajorContains(String schoolName, String province, String major);
+
+    //List<Cutoff> findCutoffsBySchoolNameAndMajorContains(String schoolName, String major);
 }

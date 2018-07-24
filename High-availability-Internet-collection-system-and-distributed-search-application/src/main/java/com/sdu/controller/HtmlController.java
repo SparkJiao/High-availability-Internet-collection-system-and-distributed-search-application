@@ -14,13 +14,18 @@ public class HtmlController {
         return "/login.html";
     }
 
-    @GetMapping("/index")
-    public String index(){
+    @GetMapping("/administrator")
+    public String administrator(){
         return "/Administration.html";
     }
 
     @GetMapping("/user")
     public String user(){
         return "/user.html";
+    }
+
+    @GetMapping("/index")
+    public String index(){
+        return "/index.html";
     }
 }

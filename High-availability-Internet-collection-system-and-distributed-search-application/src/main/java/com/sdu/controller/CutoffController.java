@@ -7,7 +7,9 @@ import com.sdu.repository.CutoffRepository;
 import com.sdu.repository.PcutoffRepository;
 import com.sdu.repository.ScutoffRepository;
 import com.sdu.utils.CutoffList;
+import com.sdu.utils.CutoffView;
 import com.sdu.utils.Message;
+import com.sdu.utils.StringProcess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,13 +72,38 @@ public class CutoffController {
     }
 
     @RequestMapping("/searchCutoff")
-    public List<Cutoff> searchCutoff(String school_name, String province, String major){
+    public CutoffView searchCutoff(String school_name, String province, String major){
         System.out.println(school_name + " " + province + " " + major);
-        List<Cutoff> cutoffs = cutoffRepository.findCutoffsBySchoolNameAndProvinceAndMajor(school_name, province, major);
+        //major = "%" + major +"%";
+        List<Cutoff> cutoffs = cutoffRepository.findCutoffsBySchoolNameAndProvinceAndMajorContains(school_name, province, major);
         System.out.println(cutoffs.size());
-        return cutoffs;
+
+        CutoffView cutoffView = new CutoffView();
+        for(int i=0;i<cutoffs.size();i++){
+            cutoffView.addCutoff(cutoffs.get(i));
+        }
+        return cutoffView;
     }
 
+    @RequestMapping("/processSchoolAndMajor")
+    public Message processSchoolAndMajor(){
+        List<Cutoff> list = cutoffRepository.findAll();
+        for(int i=0;i<list.size();i++){
+            System.out.print(i);
+            Cutoff pre = list.get(i);
+            String major = pre.getMajor();
+            major = StringProcess.deleteBlankSpace(major);
+            if(major.equals(pre.getMajor()))
+                continue;
+            else{
+                System.out.println(" change here");
+                cutoffRepository.delete(pre);
+                pre.setMajor(major);
+                saveOrUpdate(pre);
+            }
+        }
+        return new Message(true);
+    }
 
     private void saveOrUpdate(Cutoff cutoff) {
         Cutoff ncutoff = cutoffRepository.findCutoffBySchoolNameAndProvinceAndYearAndCategoryAndMajorAndBatch(

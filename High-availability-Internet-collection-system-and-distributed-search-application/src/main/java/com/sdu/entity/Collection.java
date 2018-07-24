@@ -9,13 +9,13 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "collection")
+@IdClass(CollectionKey.class)
 public class Collection {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
     @NotNull
     private String username;
+    @Id
     @NotNull
     private String school;
 
@@ -25,14 +25,6 @@ public class Collection {
     }
 
     public Collection() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getUsername() {

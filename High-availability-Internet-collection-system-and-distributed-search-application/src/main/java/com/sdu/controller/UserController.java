@@ -1,11 +1,24 @@
 package com.sdu.controller;
 
+import com.sdu.entity.Cutoff;
+import com.sdu.entity.ExpectMajor;
 import com.sdu.entity.User;
+import com.sdu.repository.CollectionRepository;
+import com.sdu.repository.CutoffRepository;
+import com.sdu.repository.ExpectMajorRepository;
 import com.sdu.repository.UserRepository;
+import com.sdu.utils.MD5;
 import com.sdu.utils.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by kkkkkk on 2018/7/3.
@@ -16,42 +29,62 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CutoffRepository cutoffRepository;
+
+    @Autowired
+    private ExpectMajorRepository expectMajorRepository;
+
     @RequestMapping("/login")
-    public Message login(String username, String password){
+    public Message login(HttpServletResponse response, String username, String password) {
+        String md_password = MD5.md5(password);
         User user = userRepository.findUserByUsername(username);
-        if(user==null){
-            return new Message(false,"can'f find such user!");
-        }else{
-            if(!user.getPassword().equals(password)){
-                return new Message(false,"incorrect password!");
-            }else{
-                return new Message(true,"success");
+        if (user == null) {
+            return new Message(false, "can'f find such user!");
+        } else {
+            if (!user.getPassword().equals(md_password)) {
+                return new Message(false, "incorrect password!");
+            } else {
+                Cookie cookie = new Cookie("username", username);
+                Cookie cookie1 = new Cookie("password", md_password);
+                cookie.setMaxAge(60 * 60 * 24);
+                cookie1.setMaxAge(60 * 60 * 24);
+                response.addCookie(cookie);
+                response.addCookie(cookie1);
+                return new Message(true, "success");
             }
         }
     }
 
     @RequestMapping("/usernameExist")
-    public Message ifUsernameExist(String username){
+    public Message ifUsernameExist(String username) {
         User user = userRepository.findUserByUsername(username);
-        if(user==null){
-            return new Message(true,"success");
-        }else{
-            return new Message(false,"the username has been registered !");
+        if (user == null) {
+            return new Message(true, "success");
+        } else {
+            return new Message(false, "the username has been registered !");
         }
     }
 
     @RequestMapping("/register")
-    public Message register(String username, String password){
+    public Message register(HttpServletResponse response, String username, String password) {
         Message msg = ifUsernameExist(username);
-        if(!msg.isFlag()) return msg;
-        userRepository.save(new User(username, password));
+        if (!msg.isFlag()) return msg;
+        String md_password = MD5.md5(password);
+        userRepository.save(new User(username, md_password));
+        Cookie cookie = new Cookie("username", username);
+        Cookie cookie1 = new Cookie("password", md_password);
+        cookie.setMaxAge(60 * 60 * 24);
+        cookie1.setMaxAge(60 * 60 * 24);
+        response.addCookie(cookie);
+        response.addCookie(cookie1);
         return new Message(true, "success");
     }
 
     @RequestMapping("/setUserInfo")
-    public Message setUserInfo(String username, String category, String province, String grade){
+    public Message setUserInfo(String username, String category, String province, String grade) {
         Message msg = ifUsernameExist(username);
-        if(msg.isFlag()){
+        if (msg.isFlag()) {
             msg.setFlag(false);
             msg.setMsg("no such user");
             return msg;
@@ -61,14 +94,53 @@ public class UserController {
     }
 
     @RequestMapping("/changePassword")
-    public Message changePassword(String username, String password){
+    public Message changePassword(String username, String password) {
         Message msg = ifUsernameExist(username);
-        if(msg.isFlag()){
+        if (msg.isFlag()) {
             msg.setFlag(false);
             msg.setMsg("no such user");
             return msg;
         }
         userRepository.changePassword(username, password);
+        return new Message(true);
+    }
+
+
+    @RequestMapping("/getSchoolExpectMajors")
+    public Message findSchoolExpectMajors(String username, String school) {
+        User user = userRepository.findUserByUsername(username);
+        String province = user.getProvince();
+        if (province == null || province.equals("")) {
+            return new Message(false, "please complete your personal information first!");
+        }
+        List<String> expectMajors = expectMajorRepository.findUsersMajor(username);
+        List<Cutoff> cutoffs = new ArrayList<>();
+        Iterator<String> iterator = expectMajors.iterator();
+        while (iterator.hasNext()) {
+            String major = iterator.next();
+            cutoffs.addAll(cutoffRepository.findCutoffsBySchoolNameAndProvinceAndMajorContains(school, province, major));
+        }
+        return new Message<List>(true, "", cutoffs);
+    }
+
+    @RequestMapping("/attempt")
+    public Message attempt(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String username = "", password = "";
+        if (cookies != null) {
+            for (int i = 0; i < cookies.length; i++) {
+                if (cookies[i].getName().equals("username")) {
+                    username = cookies[i].getValue();
+                }
+                if (cookies[i].getName().equals("password")) {
+                    password = cookies[i].getValue();
+                }
+            }
+            User user = userRepository.findUserByUsername(username);
+            if (user != null && user.getPassword().equals(password)) {
+                return new Message(true,username);
+            }
+        }
         return new Message(true);
     }
 }
