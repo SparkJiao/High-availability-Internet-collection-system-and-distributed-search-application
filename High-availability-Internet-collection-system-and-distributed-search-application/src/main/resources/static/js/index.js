@@ -45,6 +45,8 @@ window.onload = function () {
     var signup = $("#signup-button");
     var inputUsername = $("#input-username");
     var inputPassword = $("#input-password");
+    var account = $("#account");
+    var exit = $("#exit-button");
 
     //data-fragment区域清空控制变量
     var lastButton = "xd";
@@ -212,6 +214,22 @@ window.onload = function () {
         alert(message);
         $("#username-field").text(Username);
         $("#username-field").attr("href", "/user");
+        account.attr("mdui-dialog", "{target: '#exitDialog'}");
+    }
+
+    //注销
+    exit.click(function () {
+        Username = "";
+        exitback();
+    })
+
+    //注销成功回调函数
+    function exitback() {
+        alert("退出成功");
+        $("#username-field").text("←请登录");
+        account.attr("mdui-dialog", "{target: '#loginDialog'}");
+        clearCookie("username");
+        clearCookie("password");
     }
 
     majorSearchSubmit.click(function () {
@@ -369,10 +387,10 @@ window.onload = function () {
         var province = inputUsrinfoProvince.val();
         var grade = inputUsrinfoGrade.val();
 
-        $.ajas({
+        $.ajax({
             type: "POST",
             url: "/setUserInfo",
-            data: { useranme: Username, category: category, province: province, grade: grade },
+            data: { username: Username, category: category, province: province, grade: grade },
             datatype: "json",
             async: false,
             success: function (message) {
@@ -402,6 +420,7 @@ window.onload = function () {
                 data: { major: major },
                 async: false,
                 success: function (list) {
+                    list.sort();
                     $.each(list, function (i, item) {
                         addMajorListItem(item);
                     })
@@ -555,15 +574,16 @@ window.onload = function () {
     }
 
     function addExpectMajor(major) {
-        if (Username == "" || Useranme == null)
+        if (Username == "" || Username == null)
             alert("Please login first!");
         $.ajax({
             type: "POST",
-            url: "/searchCutoff",
+            url: "/addExpectMajor",
             data: { username: Username, major: major },
             datatype: "json",
             async: false,
             success: function (message) {
+                alert(message.flag);
                 console.log(message.flag);
                 if (message.flag) {
                     majorSearchList.empty();

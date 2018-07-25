@@ -8,7 +8,16 @@ public class TemplateModel {
     private String startUrl;
     private boolean dynamic;
     private int level;
+    private String target;
     private String headers;
+
+    public TemplateModel(String startUrl, boolean dynamic, int level, String target, String headers) {
+        this.startUrl = startUrl;
+        this.dynamic = dynamic;
+        this.level = level;
+        this.target = target;
+        this.headers = headers;
+    }
 
     public TemplateModel(String startUrl, int level, String headers, boolean dynamic) {
         this.startUrl = startUrl;
@@ -18,6 +27,14 @@ public class TemplateModel {
     }
 
     public TemplateModel() {
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
     }
 
     public String getHeaders() {

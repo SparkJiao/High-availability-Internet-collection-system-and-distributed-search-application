@@ -12,6 +12,7 @@ public class TemplateView {
 
     private String startUrl;
     private int level;
+    private String target;
     private String headers;
     private boolean dynamic;
     private String status;
@@ -19,9 +20,10 @@ public class TemplateView {
     private Date endTime;
     private List<MatchModel> matchModelList;
 
-    public TemplateView(String startUrl, int level, String headers, boolean dynamic, String status, Date startTime, Date endTime, List<MatchModel> matchModelList) {
+    public TemplateView(String startUrl, int level, String target, String headers, boolean dynamic, String status, Date startTime, Date endTime, List<MatchModel> matchModelList) {
         this.startUrl = startUrl;
         this.level = level;
+        this.target = target;
         this.headers = headers;
         this.dynamic = dynamic;
         this.status = status;
@@ -33,6 +35,7 @@ public class TemplateView {
     public TemplateView(Template template, List<MatchModel> matchModelsList) {
         this.startUrl = template.getStartUrl();
         this.level = template.getLevel();
+        this.target = template.getTarget();
         this.headers = template.getHeaders();
         this.dynamic = template.isDynamic();
         this.status = template.getStatus();
@@ -42,6 +45,14 @@ public class TemplateView {
     }
 
     public TemplateView() {
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
     }
 
     public String getHeaders() {

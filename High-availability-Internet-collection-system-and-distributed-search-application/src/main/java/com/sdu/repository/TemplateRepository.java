@@ -20,4 +20,7 @@ public interface TemplateRepository extends JpaRepository<Template, String>{
     void setStatus(String startUrl, String status);
 
     List<Template> findAllByOrderByStartTime();
+
+    @Transactional
+    void deleteTemplatesByStartUrl(String startUrl);
 }

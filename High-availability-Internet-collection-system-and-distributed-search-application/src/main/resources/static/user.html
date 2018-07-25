@@ -22,7 +22,7 @@
         <div class="mdui-toolbar mdui-color-blue-100">
             <span class="mdui-typo-title">Flyer查分</span>
             <div class="mdui-toolbar-spacer"></div>
-            <a href="javascript:void(0);" class="mdui-btn mdui-btn-icon" mdui-dialog="{target: '#loginDialog'}">
+            <a href="javascript:void(0);" class="mdui-btn mdui-btn-icon" mdui-dialog="{target: '#loginDialog'}" id="account">
                 <i class="mdui-icon material-icons">account_circle</i>
             </a>
             <a href="#" id="username-field">←请登录</a>
@@ -30,6 +30,7 @@
     </header>
     <div class="mdui-container">
         <!-- <div class="mdui-divider"></div> -->
+        <div class="ndui-row mdui-m-t-2 mdui-m-b-2"></div>
         <div class="mdui-row mdui-m-t-2 mdui-m-b-2 mdui-col-xs-3">
             <div class="mdui-list" id="collected-school-list">
 
@@ -85,6 +86,14 @@
                 <button class="mdui-btn mdui-ripple" id="signup-button" mdui-dialog-confirm>Signup</button>
             </div>
         </div>
+        <div class="mdui-dialog" id="exitDialog">
+            <div class="mdui-dialog-title">Exit</div>
+            <div class="mdui-dialog-content">您想要退出当前账户吗？</div>
+            <div class="mdui-dialog-actions">
+                <button class="mdui-btn mdui-ripple">cancel</button>
+                <button class="mdui-btn mdui-ripple" id="exit-button" mdui-dialog-confirm>confirm</button>
+            </div>
+        </div>
         <!-- <div class="mdui-divider-dark"></div> -->
     </div>
     <script src="js/jquery-3.2.1.min.js"></script>
@@ -96,6 +105,7 @@
     <script src="js/chart.js"></script>
     <script src="chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.js"></script>
     <script src="js/CutoffView.js"></script>
+    <script src="js/cookieUtils.js"></script>
     <script src="js/user.js"></script>
 </body>
 

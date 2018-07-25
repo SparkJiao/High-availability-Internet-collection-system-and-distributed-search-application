@@ -55,7 +55,7 @@ public class ManageController {
             List<Model> models = modelRepository.findModelsByStartUrlOrderByCurrentLevel(templateModel.getStartUrl());
             List<MatchModel> matchModels = new ArrayList<>();
             for(int j=0;j<models.size();j++){
-                Model model = models.get(i);
+                Model model = models.get(j);
                 matchModels.add(new MatchModel(model.getCurrentLevel(),model.getToken(), model.getPattern(), model.getWherePagenumber(), model.getWhereSize(), model.getTotal()));
             }
             //List<MatchModel> matchModelList = matchRepository.findMatchModel(templateModel.getStartUrl());
@@ -63,5 +63,12 @@ public class ManageController {
             templateViews.add(templateView);
         }
         return templateViews;
+    }
+
+    @RequestMapping("/deleteTemplate")
+    public Message deleteTemplate(String startUrl){
+        modelRepository.deleteModelsByStartUrl(startUrl);
+        templateRepository.deleteTemplatesByStartUrl(startUrl);
+        return new Message(true);
     }
 }

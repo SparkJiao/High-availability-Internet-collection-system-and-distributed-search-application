@@ -9,6 +9,7 @@ public class StringProcess {
         target = target.replaceAll(" ","");
         target = target.replaceAll("★", "");
         target = target.replaceAll("◆", "");
+        target = target.replaceAll("\n","");
         return target;
   }
 }

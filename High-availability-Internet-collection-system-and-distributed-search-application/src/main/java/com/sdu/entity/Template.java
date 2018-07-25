@@ -27,33 +27,45 @@ public class Template {
     @NotNull
     private int level;
     @NotNull
+    private String target;
     private String headers;
     private String status;
     private Date startTime;
     private Date endTime;
 
-    public Template(@NotNull String startUrl, @NotNull boolean dynamic, @NotNull int level, @NotNull String headers) {
+    public Template(@NotNull String startUrl, @NotNull boolean dynamic, @NotNull int level,  @NotNull String target, String headers) {
         this.startUrl = startUrl;
         this.dynamic = dynamic;
         this.level = level;
         this.headers  = headers;
+        this.target = target;
         this.status = "未采集";
     }
 
-    public Template(@NotNull String startUrl, @NotNull boolean dynamic, @NotNull int level, @NotNull String headers, String status, Date startTime, Date endTime) {
+    public Template(@NotNull String startUrl, @NotNull boolean dynamic, @NotNull int level, @NotNull String target, String headers, String status, Date startTime, Date endTime) {
         this.startUrl = startUrl;
         this.dynamic = dynamic;
         this.level = level;
+        this.target = target;
         this.headers = headers;
         this.status = status;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
+    public Template(@NotNull String startUrl, @NotNull boolean dynamic, @NotNull int level, @NotNull String target) {
+        this.startUrl = startUrl;
+        this.dynamic = dynamic;
+        this.level = level;
+        this.target = target;
+        this.status = "未采集";
+    }
+
     public Template(TemplateView templateView){
         this.startUrl = templateView.getStartUrl();
         this.dynamic = templateView.isDynamic();
         this.level = templateView.getLevel();
+        this.target = templateView.getTarget();
         this.headers = templateView.getHeaders();
         if(templateView.getStatus() == null){
             this.status = "未采集";
@@ -61,6 +73,14 @@ public class Template {
     }
 
     public Template() {
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
     }
 
     public String getHeaders() {

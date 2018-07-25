@@ -33,7 +33,7 @@ public class TemplateController {
         List<TemplateModel> templateModels = new ArrayList<>();
         for(int i=0;i<templates.size();i++){
             Template template = templates.get(i);
-            TemplateModel templateModel = new TemplateModel(template.getStartUrl(), template.getLevel(), template.getHeaders(), template.isDynamic());
+            TemplateModel templateModel = new TemplateModel(template.getStartUrl(), template.isDynamic(),template.getLevel(), template.getTarget(),template.getHeaders());
             templateModels.add(templateModel);
         }
         return templateModels;

@@ -2,7 +2,7 @@ window.onload = function () {
 
     var Username = "";
     var schoollist = $("#collected-school-list");
-    var schooldisplay = $("school-display");
+    var schooldisplay = $("#school-display");
     var addMoreSchool = $("#add-more-school");
     var schoolinput = $("#school-input");
     var schoolsearch = $("#school-search");
@@ -14,11 +14,15 @@ window.onload = function () {
     var signup = $("#signup-button");
     var inputUsername = $("#input-username");
     var inputPassword = $("#input-password");
+    var exit = $("#exit-button");
+    var account = $("#account");
 
     var schoolExist = new Set();
     var schoolExpectMajorsList = new Map();
 
     attempt();
+
+    hideSearch();
 
     findCollectedSchools();
 
@@ -31,6 +35,7 @@ window.onload = function () {
             success: function (message) {
                 if (message.flag) {
                     Username = message.msg;
+                    signback();
                 }
             }
         })
@@ -86,11 +91,30 @@ window.onload = function () {
         })
     })
 
+    //注销
+    exit.click(function () {
+        Username = "";
+        exitback();
+        schoollist.empty();
+        schooldisplay.empty();
+        hideSearch();
+    })
+
     //登录成功回调函数
     function signback() {
         //alert(message);
         $("#username-field").text(Username);
         //$("#username-field").attr("href", "/user");
+        account.attr("mdui-dialog", "{target: '#exitDialog'}");
+    }
+
+    //注销成功回调函数
+    function exitback() {
+        alert("退出成功");
+        $("#username-field").text("←请登录");
+        account.attr("mdui-dialog", "{target: '#loginDialog'}");
+        clearCookie("username");
+        clearCookie("password");
     }
 
     //添加更多学校按钮单击事件
@@ -166,6 +190,12 @@ window.onload = function () {
         schoolExist.forEach(function (value, value2, set) {
             $("#" + value + "Chart").hide();
         })
+
+        hideSearch();
+    }
+
+    //隐藏搜索界面
+    function hideSearch() {
         schoolinput.hide();
         schoolsearch.hide();
         schoolconfirm.hide();
@@ -248,6 +278,8 @@ window.onload = function () {
         schoollist.append(content);
         var school = $("#" + schoolname);
 
+        mdui.mutation();
+
         //开辟绘制区域 包括tab和chart区域
         //总区域id=schoolname+Chart
         //tab区域id=schoolname-grade-tab
@@ -260,37 +292,51 @@ window.onload = function () {
                     <a href=\"#"+ schoolname + "-min-grade-chart\" class=\"mdui-ripple mdui-ripple-white\" id=\"" + schoolname + "-tab-min\">最低分</a>\
                     <a href=\"#"+ schoolname + "-ave-grade-chart\" class=\"mdui-ripple mdui-ripple-white\" id=\"" + schoolname + "-tab-ave\">平均分</a>\
                 </div>\
+                <div id=\"" + schoolname + "-max-grade-chart\"></div>\
+                <div id=\"" + schoolname + "-min-grade-chart\"></div>\
+                <div id=\"" + schoolname + "-ave-grade-chart\"></div>\
             </div>";
-        content += "<div id=\"" + schoolname + "-max-grade-chart\"></div>";
-        content += "<div id=\"" + schoolname + "-min-grade-chart\"></div>";
-        content += "<div id=\"" + schoolname + "-ave-grade-chart\"></div>";
+        
         schooldisplay.append(content);
 
+        mdui.mutation();
+
         //获取对应学校期望专业的所有分数线信息
-        var flag = getSchoolExpectMajors(schoolname);
-        if (!flag) {
-            return;
-        }
+        //var flag = 
+        getSchoolExpectMajors(schoolname);
+
+        // console.log("flag="+flag);
+
+        // if (!flag) {
+        //     return;
+        // }
+
+        console.log("stop here 0");
 
         //先把所有图表绘制一遍
-        addChart(schoolExpectMajorsList.get(schoolname));
+        addChart(schoolname, schoolExpectMajorsList.get(schoolname));
+
+        console.log("stop here 1");
 
         //给tab标签绑定单击事件
-        $("#" + schoolname + "tab-max").click(function () {
+        $("#" + schoolname + "-tab-max").click(function () {
             document.getElementById(schoolname + "-max-grade-chart").__chartist__.update();
         })
-        $("#" + schoolname + "tab-min").click(function () {
+        $("#" + schoolname + "-tab-min").click(function () {
             document.getElementById(schoolname + "-min-grade-chart").__chartist__.update();
         })
-        $("#" + schoolname + "tab-ave").click(function () {
+        $("#" + schoolname + "-tab-ave").click(function () {
             document.getElementById(schoolname + "-ave-grade-chart").__chartist__.update();
         })
+
+        console.log("stop here 2");
 
         //把所有内容隐藏
         $("#" + schoolname + "Chart").hide();
 
         //给标签列表绑定单击事件
         school.click(function () {
+            console.log("click");
             schoolinput.hide();
             schoolsearch.hide();
             schoolconfirm.hide();
@@ -306,7 +352,10 @@ window.onload = function () {
             }
         })
 
+        console.log("stop here 3");
+
         mdui.mutation();
+
     }
 
     //显示某一学校时 展示学校的操作
@@ -319,7 +368,7 @@ window.onload = function () {
     }
 
     //绘制某个学校期望专业分数线的图标
-    function addChart(list) {
+    function addChart(schoolname, list) {
         var maxCutoffView = new CutoffView();
         var minCutoffView = new CutoffView();
         var aveCutoffView = new CutoffView();
@@ -337,13 +386,13 @@ window.onload = function () {
         minCutoffView.generate();
         aveCutoffView.generate();
 
-        $("#" + item.schoolName + "-max-grade-chart").empty();
-        $("#" + item.schoolName + "-min-grade-chart").empty();
-        $("#" + item.schoolName + "-ave-grade-chart").empty();
+        $("#" + schoolname + "-max-grade-chart").empty();
+        $("#" + schoolname + "-min-grade-chart").empty();
+        $("#" + schoolname + "-ave-grade-chart").empty();
 
-        newChart(maxCutoffView.x, maxCutoffView.y, maxCutoffView.taken, "line", item.schoolName + "-max-grade-chart");
-        newChart(minCutoffView.x, minCutoffView.y, minCutoffView.taken, "line", item.schoolName + "-min-grade-chart");
-        newChart(aveCutoffView.x, aveCutoffView.y, aveCutoffView.taken, "line", item.schoolName + "-ave-grade-chart");
+        newChart(maxCutoffView.x, maxCutoffView.y, maxCutoffView.taken, "line", schoolname + "-max-grade-chart");
+        newChart(minCutoffView.x, minCutoffView.y, minCutoffView.taken, "line", schoolname + "-min-grade-chart");
+        newChart(aveCutoffView.x, aveCutoffView.y, aveCutoffView.taken, "line", schoolname + "-ave-grade-chart");
     }
 
     //获取某个学校所有期望专业分数线
@@ -363,6 +412,7 @@ window.onload = function () {
                 } else {
                     var list = message.obj;
                     schoolExpectMajorsList.set(school, list);
+                    console.log(school + " success");
                     return true;
                 }
             }

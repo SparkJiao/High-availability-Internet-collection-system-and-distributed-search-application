@@ -16,6 +16,38 @@ window.onload = function () {
     var headers_field = $("#headers_field");
     var level_field = $("#level_field");
     var content_field = $("#dialog-content");
+    var target_field = $("#target_field");
+    var index_field = $("#index_field");
+
+    var startUrls = new Array();
+
+    var models = new Array();
+
+    var panel = $("#panel");
+    var submit = $("#submit");
+    var delete_button = $("#delete-button");
+
+    //全局template标识符
+    var index = 0;
+
+    attempt();
+
+    function attempt() {
+        $.ajax({
+            type: "POST",
+            url: "/adminAttempt",
+            datatype: "json",
+            async: false,
+            success: function (message) {
+                if (message.flag) {
+                    Username = message.msg;
+                    //signback("欢迎回来！" + Username);
+                } else {
+                    location.href = "/admin";
+                }
+            }
+        })
+    }
 
     function addInput(levels) {
         var content = "";
@@ -84,27 +116,23 @@ window.onload = function () {
             return false;
     };
 
-    var models = new Array();
-
-    var panel = $("#panel");
-    var submit = $("#submit");
-
-    function addTemplate(startUrl, level, headers, dynamic, status, startTime, endTime, models) {
+    function addTemplate(index, startUrl, level, target, headers, dynamic, status, startTime, endTime, models) {
+        //status 待使用
         content = "";
         content += "\
-            <div class=\"mdui-panel mdui-panel-popout\" mdui-panel>\
+            <div class=\"mdui-panel mdui-panel-popout\" mdui-panel id=\"template"+ index + "\">\
                 <div class=\"mdui-panel-item\">\
                     <div class=\"mdui-panel-item-header\">\
-                        <div class=\"mdui-panel-item-title\">"+ startUrl + "</div>\
-                        <div class=\"mdui-panel-item-summary\">"+ level + "</div>\
-                        <div class=\"mdui-panel-item-summary\">"+ headers + "</div>\
-                        <div class=\"mdui-panel-item-summary\">"+ (dynamic ? "动态页面" : "静态页面") + "</div>\
-                        <div class=\"mdui-panel-item-summary\">"+ status + "</div>\
-                        <div class=\"mdui-panel-item-summary\">创建于"+ changeTimestamp(startTime) + "</div>\
-                        <div class=\"mdui-panel-item-summary\">于"+ changeTimestamp(endTime) + "采集完成</div>\
+                        <div class=\"mdui-panel-item-title\">"+ index + ":&nbsp;&nbsp;&nbsp;&nbsp;" + startUrl + "</div>\
                         <i class=\"mdui-panel-item-arrow mdui-icon material-icons\">keyboard_arrow_down</i>\
                     </div>\
                     <div class=\"mdui-panel-item-body\">\
+                        <ul class=\"mdui-list\">\
+                            <li class=\"mdui-list-item mdui-ripple\">"+ level + "层&nbsp;&nbsp;&nbsp;&nbsp;" + (dynamic ? "动态页面" : "静态页面") + "</li>\
+                            <li class=\"mdui-list-item mdui-ripple\">创建于"+ changeTimestamp(startTime) + "&nbsp;&nbsp;&nbsp;&nbsp;于" + changeTimestamp(endTime) + "采集完成</li>\
+                            <li class=\"mdui-list-item mdui-ripple\">target："+ target + "</li>\
+                            <li class=\"mdui-list-item mdui-ripple\">headers："+ headers + "</li>\
+                        </ul>\
                         <div class=\"mdui-table-fluid\">\
                             <table class=\"mdui-table mdui-table-hoverable\">\
                                 <thead>\
@@ -151,14 +179,16 @@ window.onload = function () {
 
     submit.click(function () {
         var startUrl = startUrl_field.val();
+        var target = target_field.val();
         var headers = headers_field.val();
         var level = level_field.val();
         var dynamic = getDynamicValue();
         console.log("startUrl:" + startUrl);
+        console.log("target:" + target);
         console.log("headers:" + headers);
         console.log("level:" + level);
         console.log("isStatic:" + dynamic);
-        if (!startUrl || !headers || !level) {
+        if (!startUrl || !target || !level) {
             alert("请完成所有项目！");
             return;
         }
@@ -181,7 +211,7 @@ window.onload = function () {
         $.ajax({
             type: "POST",
             url: "/addTemplate",
-            data: JSON.stringify({ "startUrl": startUrl, "level": level, "headers": headers, "dynamic": dynamic, "matchModelList": models }),
+            data: JSON.stringify({ "startUrl": startUrl, "level": level, "target":target, "headers": headers, "dynamic": dynamic, "matchModelList": models }),
             contentType: "application/json",
             datatype: "json",
             async: false,
@@ -191,12 +221,19 @@ window.onload = function () {
                     //var start_time = message.obj.startTime;
                     var startTime = getNow();
                     var status = "未采集";
-                    addTemplate(startUrl, level, headers, dynamic, status, startTime, null, models);
+                    startUrls[index] = startUrl;
+                    addTemplate(index, startUrl, level, target, headers, dynamic, status, startTime, null, models);
+                    index++;
                 } else {
                     alert(message.msg);
                 }
             }
         })
+    })
+
+    delete_button.click(function (){
+        var ind = index_field.val();
+        deleteTemplate(ind);
     })
 
     function getAllModels() {
@@ -207,7 +244,8 @@ window.onload = function () {
             async: false,
             success: function (list) {
                 $.each(list, function (i, item) {
-                    addTemplate(item.startUrl, item.level, item.headers, item.dynamic, item.status, item.startTime, item.endTime, item.matchModelList);
+                    startUrls[index++] = item.startUrl;
+                    addTemplate(i, item.startUrl, item.level, item.target, item.headers, item.dynamic, item.status, item.startTime, item.endTime, item.matchModelList);
                 })
             }
         })
@@ -226,6 +264,22 @@ window.onload = function () {
         var d = new Date();
         var times = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
         return times;
+    }
+
+    function deleteTemplate(ind) {
+        $.ajax({
+            type: "POST",
+            url: "/deleteTemplate",
+            data: { startUrl: startUrls[ind] },
+            datatype: "json",
+            async: false,
+            success: function (message) {
+                console.log(message);
+                if (message.flag) {
+                    $("#template" + ind).remove();
+                }
+            }
+        })
     }
 
     mdui.mutation();

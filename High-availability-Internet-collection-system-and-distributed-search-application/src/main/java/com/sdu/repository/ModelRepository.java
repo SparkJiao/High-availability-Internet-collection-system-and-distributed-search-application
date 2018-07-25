@@ -5,6 +5,7 @@ import com.sdu.utils.MatchModel;
 import com.sdu.utils.MatchView;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface ModelRepository extends JpaRepository<Model, Integer>{
 
     List<Model> findModelsByStartUrlOrderByCurrentLevel(String startUrl);
 
+    @Transactional
+    void deleteModelsByStartUrl(String startUrl);
 }

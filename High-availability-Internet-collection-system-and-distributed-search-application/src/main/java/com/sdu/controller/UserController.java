@@ -7,8 +7,11 @@ import com.sdu.repository.CollectionRepository;
 import com.sdu.repository.CutoffRepository;
 import com.sdu.repository.ExpectMajorRepository;
 import com.sdu.repository.UserRepository;
+import com.sdu.utils.CookieUtils;
+import com.sdu.utils.CutoffView;
 import com.sdu.utils.MD5;
 import com.sdu.utils.Message;
+import org.apache.tomcat.util.digester.ArrayStack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,12 +48,8 @@ public class UserController {
             if (!user.getPassword().equals(md_password)) {
                 return new Message(false, "incorrect password!");
             } else {
-                Cookie cookie = new Cookie("username", username);
-                Cookie cookie1 = new Cookie("password", md_password);
-                cookie.setMaxAge(60 * 60 * 24);
-                cookie1.setMaxAge(60 * 60 * 24);
-                response.addCookie(cookie);
-                response.addCookie(cookie1);
+                CookieUtils.setCookie(response, "username", username, 7200);
+                CookieUtils.setCookie(response, "password", md_password, 7200);
                 return new Message(true, "success");
             }
         }
@@ -72,12 +71,8 @@ public class UserController {
         if (!msg.isFlag()) return msg;
         String md_password = MD5.md5(password);
         userRepository.save(new User(username, md_password));
-        Cookie cookie = new Cookie("username", username);
-        Cookie cookie1 = new Cookie("password", md_password);
-        cookie.setMaxAge(60 * 60 * 24);
-        cookie1.setMaxAge(60 * 60 * 24);
-        response.addCookie(cookie);
-        response.addCookie(cookie1);
+        CookieUtils.setCookie(response, "username", username, 7200);
+        CookieUtils.setCookie(response, "password", md_password, 7200);
         return new Message(true, "success");
     }
 
@@ -118,7 +113,11 @@ public class UserController {
         Iterator<String> iterator = expectMajors.iterator();
         while (iterator.hasNext()) {
             String major = iterator.next();
-            cutoffs.addAll(cutoffRepository.findCutoffsBySchoolNameAndProvinceAndMajorContains(school, province, major));
+            System.out.println(major.length());
+            System.out.println(school + " " + province + " " + major);
+            List<Cutoff> tmp = cutoffRepository.findCutoffsBySchoolNameAndProvinceAndMajorContains(school, province, major);
+            System.out.println("size = " + cutoffs.size());
+            cutoffs.addAll(tmp);
         }
         return new Message<List>(true, "", cutoffs);
     }
@@ -126,21 +125,14 @@ public class UserController {
     @RequestMapping("/attempt")
     public Message attempt(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        String username = "", password = "";
-        if (cookies != null) {
-            for (int i = 0; i < cookies.length; i++) {
-                if (cookies[i].getName().equals("username")) {
-                    username = cookies[i].getValue();
-                }
-                if (cookies[i].getName().equals("password")) {
-                    password = cookies[i].getValue();
-                }
-            }
+        String username = CookieUtils.getCookie(cookies, "username");
+        String password = CookieUtils.getCookie(cookies, "password");
+        if (username != null && password != null) {
             User user = userRepository.findUserByUsername(username);
             if (user != null && user.getPassword().equals(password)) {
-                return new Message(true,username);
+                return new Message(true, username);
             }
         }
-        return new Message(true);
+        return new Message(false);
     }
 }
